@@ -14,15 +14,18 @@
 #        fittedY: n by p matrix of fitted/recovered functional observations
 ##########################################################################
 
-GetINScores <- function(yvec, tvec, optns,obsGrid, mu, lambda, phi, sigma2=NULL){
+GetINScores <- function(yvec, tvec, optns,obsGrid, mu, lambda, phi, sigma2=NULL, weights = NULL){
   if(length(lambda) != ncol(phi)){
     stop('No. of eigenvalues is not the same as the no. of eigenfunctions.')
   }
-  
+  if (is.null(weights)) {
+    w <- rep(1, length(yvec))/length(yvec)
+  } else w <- weights
+  if (length(w) != length(yvec)) stop("Weights are not the same length as yvec.")
   #tau = sort(unique(signif( unlist(t),14 ))) # get observed time grid
   ranget <- diff(range(tvec))
   mu= approx(obsGrid,mu,tvec)$y
-  cy = yvec - mu
+  cy = w*(yvec - mu)
   phi = apply(phi,2,function(phivec){return(approx(obsGrid,phivec,tvec)$y)})
   
   xiEst = matrix(0,length(lambda)) 

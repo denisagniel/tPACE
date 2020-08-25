@@ -91,7 +91,7 @@
 #' sample curves." Technometrics 28, no. 4, 329-337. (modes of variation for dense data FPCA)}
 #' @export
 
-FPCA = function(Ly, Lt, optns = list()){
+FPCA = function(Ly, Lt, optns = list(), weights = NULL){
   
   firsttsFPCA <- Sys.time() #First time-stamp for FPCA
   # Check the data validity for further analysis
@@ -227,7 +227,7 @@ FPCA = function(Ly, Lt, optns = list()){
     scoresObj <- GetCEScores(Ly, Lt, optns, muObs, truncObsGrid, CovObs, eigObj$lambda, phiObs, sigma2)
   } else if (optns$methodXi == 'IN') {
     scoresObj <- mapply(function(yvec,tvec)
-      GetINScores(yvec, tvec,optns= optns,obsGrid,mu = muObs,lambda =eigObj$lambda ,phi = phiObs,sigma2 = sigma2),Ly,Lt)
+      GetINScores(yvec, tvec,optns= optns,obsGrid,mu = muObs,lambda =eigObj$lambda ,phi = phiObs,sigma2 = sigma2, weights = weights),Ly,Lt)
   }
   
   if (optns$fitEigenValues) {
